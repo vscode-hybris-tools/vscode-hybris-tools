@@ -1,0 +1,97 @@
+{
+    "name": "vscode-hybris-tools",
+    "displayName": "vscode-hybris-tools",
+    "description": "",
+    "version": "0.0.1",
+    "publisher": "mojo2012",
+    "engines": {
+        "vscode": "^1.23.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onLanguage:impex",
+        "onLanguage:flexibleSearchQuery"
+    ],
+    "main": "./extension",
+    "contributes": {
+        "configuration": [
+            {
+                "title": "Hybris Tools",
+                "properties": {
+                    "hybris.hac.url": {
+                        "type": "string",
+                        "default": "https://localhost:9002/hac",
+                        "description": "The URL to the hybris HAC extension"
+                    },
+                    "hybris.hac.username": {
+                        "type": "string",
+                        "default": "admin",
+                        "description": "The username used for login into the HAC"
+                    },
+                    "hybris.hac.password": {
+                        "type": "string",
+                        "default": "nimda",
+                        "description": "The password used for login into the HAC"
+                    }
+                }
+            }
+        ],
+        "languages": [
+            {
+                "id": "impex",
+                "aliases": [
+                    "ImpEx",
+                    "impex",
+                    "Impex"
+                ],
+                "extensions": [
+                    ".impex"
+                ],
+                "configuration": "./language-configuration.json"
+            },
+            {
+                "id": "flexibleSearchQuery",
+                "aliases": [
+                    "flexQuery"
+                ],
+                "extensions": [
+                    ".fsq",
+                    "flexQuery",
+                    "sql"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "commands": [
+            {
+                "command": "extension.importImpex",
+                "title": "Hybris: import impex"
+            },
+            {
+                "command": "extension.validateImpex",
+                "title": "Hybris: validate impex"
+            },
+            {
+                "command": "extension.runFlexibleSearchQuery",
+                "title": "Hybris: run flexible search query"
+            }
+        ]
+    },
+    "scripts": {
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "test": "node ./node_modules/vscode/bin/test"
+    },
+    "devDependencies": {
+        "typescript": "^2.6.1",
+        "vscode": "^1.1.6",
+        "eslint": "^4.11.0",
+        "@types/node": "^7.0.43",
+        "@types/mocha": "^2.2.42"
+    },
+    "dependencies": {
+        "cheerio": "^1.0.0-rc.2",
+        "request": "^2.87.0"
+    }
+}
