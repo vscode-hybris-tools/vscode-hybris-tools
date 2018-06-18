@@ -7,15 +7,18 @@ function activate(context) {
 
     var hacUtil = new HacUtil();
 
-
     let outputChannel = vscode.window.createOutputChannel("hybris-tools");
 
-    let logErrorOutput = function (text) {
+    let logOutput = function (text) {
         outputChannel.appendLine(text);
         outputChannel.show(true);
     }
 
-    let getImpexContent = function (editor) {
+    let logErrorOutput = function (text) {
+        logOutput("ERROR: " + text);
+    }
+
+    let getEditorContent = function (editor) {
         let selection = editor.selection;
 
         var editorContent;
@@ -39,7 +42,7 @@ function activate(context) {
             return; // No open text editor
         }
 
-        var editorContent = getImpexContent(editor);
+        var editorContent = getEditorContent(editor);
 
         hacUtil.executeImpex(editorContent, function () {
             vscode.window.showInformationMessage('Impex executed successfully.');
@@ -59,20 +62,37 @@ function activate(context) {
             return; // No open text editor
         }
 
-        var editorContent = getImpexContent(editor);
+        var editorContent = getEditorContent(editor);
 
         hacUtil.executeImpexValidation(editorContent, function () {
             vscode.window.showInformationMessage('Impex validated successfully.');
-        }, function (errorMessage, impexResult) {
+        }, function (errorMessage, detailedMessage) {
             // Display a message box to the user
             vscode.window.showErrorMessage(errorMessage);
-            logErrorOutput(impexResult);
+            logErrorOutput(detailedMessage);
         });
     });
     context.subscriptions.push(validateImpex);
 
     let runFlexibleSearchQuery = vscode.commands.registerCommand('extension.runFlexibleSearchQuery', function () {
-        //
+        let editor = vscode.window.activeTextEditor;
+
+        if (!editor) {
+            vscode.window.showInformationMessage('No impex to validate');
+            return; // No open text editor
+        }
+
+        var editorContent = getEditorContent(editor);
+
+        hacUtil.executeFlexibleSearch(editorContent, function (queryResult) {
+            vscode.window.showInformationMessage('Impex validated successfully.');
+            logOutput("Flexible search result:");
+            logOutput(queryResult);
+        }, function (errorMessage, detailedMessage) {
+            // Display a message box to the user
+            vscode.window.showErrorMessage(errorMessage);
+            logErrorOutput(detailedMessage);
+        });
     });
     context.subscriptions.push(runFlexibleSearchQuery);
 

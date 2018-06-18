@@ -1,6 +1,7 @@
 const vscode = require('vscode');
 const request = require('request');
 const cheerio = require('cheerio');
+const AsciiTable = require('ascii-table');
 
 module.exports = class HacUtil {
     constructor() {
@@ -177,7 +178,7 @@ module.exports = class HacUtil {
                         //  successfully logged in
                         successFunc();
                     } else {
-                        errorFunc("Validation has encountered problems", "Validation error:" + impexResult.trim());
+                        errorFunc("Validation has encountered problems", "Validation error:" + (impexResult !== undefined ? impexResult.trim() : ""));
                     }
                 });
             }, function (statusCode) {
@@ -186,5 +187,63 @@ module.exports = class HacUtil {
         }, function (statusCode) {
             errorFunc('Could not retrieve CSFR token (http status=' + statusCode + ').');
         });
+    }
+
+    executeFlexibleSearch(query, successFunc, errorFunc) {
+        let self = this;
+
+        self.fetchCsrfTokenSessionId(function (csrfToken, sessionId) {
+            self.login(csrfToken, sessionId, function (csrfToken, sessionId) {
+                let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url")
+                var hacImpexActionUrl;
+
+                if (hacUrl) {
+                    hacImpexActionUrl = hacUrl + "/console/flexsearch/execute";
+                }
+
+                let formContent = {
+                    _csrf: csrfToken,
+                    commit: false,
+                    flexibleSearchQuery: query,
+                    locale: "de",
+                    maxCount: 200,
+                    sqlQuery: "",
+                    user: "admin"
+                };
+
+                let headers = {
+                    Cookie: sessionId
+                };
+
+                // validate impex
+                request.post({ url: hacImpexActionUrl, headers: headers, form: formContent }, function (error, response, body) {
+                    var result = JSON.parse(body);
+
+                    if (response.statusCode == 200 && result.exception == null) {
+                        //  successfully logged in
+                        successFunc(self.json2AsciiTable(result));
+                    } else {
+                        errorFunc("Flexible search query could not be executed", result.exception.message);
+                    }
+                });
+            }, function (statusCode) {
+                errorFunc('Could not login with stored credentials (http status=' + statusCode + ').');
+            });
+        }, function (statusCode) {
+            errorFunc('Could not retrieve CSFR token (http status=' + statusCode + ').');
+        });
+    }
+
+    json2AsciiTable(queryResultObject) {
+        var table = new AsciiTable(new Date(), null);
+        var headers = ["#"].concat(queryResultObject.headers);
+
+        table.setHeading(headers);
+        for (var x = 0; x < queryResultObject.resultList.length; x++) {
+            var row = [x].concat(queryResultObject.resultList[x]);
+            table.addRow(row);
+        }
+
+        return table.toString();
     }
 }

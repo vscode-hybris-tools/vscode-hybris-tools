@@ -10,6 +10,7 @@
     "categories": [
         "Other"
     ],
+    "extensionDepenencies": [],
     "activationEvents": [
         "onLanguage:impex",
         "onLanguage:flexibleSearchQuery"
@@ -59,7 +60,8 @@
                 "extensions": [
                     ".fsq",
                     "flexQuery",
-                    "sql"
+                    "sql",
+                    "flex"
                 ],
                 "configuration": "./language-configuration.json"
             }
@@ -84,14 +86,16 @@
         "test": "node ./node_modules/vscode/bin/test"
     },
     "devDependencies": {
-        "typescript": "^2.6.1",
-        "vscode": "^1.1.6",
+        "@types/mocha": "^2.2.42",
+        "@types/node": "^7.0.66",
         "eslint": "^4.11.0",
-        "@types/node": "^7.0.43",
-        "@types/mocha": "^2.2.42"
+        "typescript": "^2.9.2",
+        "vscode": "^1.1.6"
     },
     "dependencies": {
+        "ascii-table": "0.0.9",
         "cheerio": "^1.0.0-rc.2",
+        "console-stamp": "^0.2.6",
         "request": "^2.87.0"
     }
 }
