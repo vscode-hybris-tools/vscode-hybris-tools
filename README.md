@@ -1,6 +1,6 @@
 # vscode-hybris-tools README
 
-This is the README for your extension "vscode-hybris-tools". After writing up a brief description, we recommend including the following sections.
+hybris tools for vscode
 
 ## Features
 
