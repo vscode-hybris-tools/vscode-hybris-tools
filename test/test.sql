@@ -1,1 +1,1 @@
-SELECT {pk}, {uid} FROM {User}
+select pk from users;

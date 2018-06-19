@@ -76,6 +76,10 @@
             {
                 "command": "extension.runFlexibleSearchQuery",
                 "title": "Hybris: run flexible search query"
+            },
+            {
+                "command": "extension.runRawSqlQuery",
+                "title": "Hybris: run raw SQL query"
             }
         ],
         "menus": {
@@ -95,6 +99,10 @@
                 {
                     "when": "resourceExtname == .fsql",
                     "command": "extension.runFlexibleSearchQuery"
+                },
+                {
+                    "when": "resourceExtname == .sql",
+                    "command": "extension.runRawSqlQuery"
                 }
             ]
         }

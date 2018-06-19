@@ -17,6 +17,18 @@ module.exports = class HacUtil {
         return html("input[name=_csrf]").val();
     }
 
+    createErrorInfo(error, response) {
+        var ret = {};
+
+        if (error) {
+            ret.error = error;
+        }
+
+        if (response) {
+            ret.responseStatusCode = response.sstatusCode;
+        }
+    }
+
     fetchCsrfTokenSessionId(successFunc, errorFunc) {
         let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url")
 
@@ -24,12 +36,12 @@ module.exports = class HacUtil {
 
         // get the login form and extract the CSRF token
         request(hacUrl, { timeout: 1000 }, function (error, response, body) {
-            if (response.statusCode == 200) {
+            if (!error && response.statusCode == 200) {
                 let csfr = self.extractCsrfToken(body);
                 let sessionId = self.extractSessionId(response);
                 successFunc(csfr, sessionId);
             } else {
-                errorFunc(response.statusCode);
+                errorFunc(self.createErrorInfo(error, response.statusCode));
             }
         });
     }
@@ -47,11 +59,11 @@ module.exports = class HacUtil {
 
         // get the login form and extract the CSRF token
         request({ url: hacImpexUrl, headers: headers }, function (error, response, body) {
-            if (response.statusCode == 200) {
+            if (!error && response.statusCode == 200) {
                 let csfr = self.extractCsrfToken(body);
                 successFunc(csfr, sessionId);
             } else {
-                errorFunc(response.statusCode);
+                errorFunc(self.createErrorInfo(error, response.statusCode));
             }
         });
     }
@@ -189,7 +201,7 @@ module.exports = class HacUtil {
         });
     }
 
-    executeFlexibleSearch(query, successFunc, errorFunc) {
+    executeFlexibleSearch(query, isFlexQuery, successFunc, errorFunc) {
         let self = this;
 
         self.fetchCsrfTokenSessionId(function (csrfToken, sessionId) {
@@ -204,10 +216,10 @@ module.exports = class HacUtil {
                 let formContent = {
                     _csrf: csrfToken,
                     commit: false,
-                    flexibleSearchQuery: query,
-                    locale: "de",
-                    maxCount: null,
-                    sqlQuery: "",
+                    flexibleSearchQuery: isFlexQuery ? query : null,
+                    locale: "en",
+                    maxCount: 999999999,
+                    sqlQuery: !isFlexQuery ? query : null,
                     user: "admin"
                 };
 

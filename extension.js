@@ -33,9 +33,7 @@ function activate(context) {
         return editorContent;
     }
 
-    // The command has been defined in the package.json file
-    // Now provide the implementation of the command with  registerCommand
-    // The commandId parameter must match the command field in package.json
+    // IMPEX EXECUTION
     let importImpex = vscode.commands.registerCommand('extension.importImpex', function () {
         let editor = vscode.window.activeTextEditor;
 
@@ -47,15 +45,14 @@ function activate(context) {
         var editorContent = getEditorContent(editor);
 
         hacUtil.executeImpex(editorContent, function () {
-            vscode.window.showInformationMessage('Impex executed successfully.');
+            logOutput('Impex executed successfully: ' + editor.document.fileName);
         }, function (errorMessage, impexResult) {
-            // Display a message box to the user
-            vscode.window.showErrorMessage(errorMessage);
-            logErrorOutput(impexResult);
+            logErrorOutput('Impex execution failed (' + editor.document.fileName + '): ' + impexResult);
         });
     });
     context.subscriptions.push(importImpex);
 
+    // IMPEX VALIDATION
     let validateImpex = vscode.commands.registerCommand('extension.validateImpex', function () {
         let editor = vscode.window.activeTextEditor;
 
@@ -67,36 +64,50 @@ function activate(context) {
         var editorContent = getEditorContent(editor);
 
         hacUtil.executeImpexValidation(editorContent, function () {
-            vscode.window.showInformationMessage('Impex validated successfully.');
+            logOutput('Impex validated successfully: ' + editor.document.fileName);
         }, function (errorMessage, detailedMessage) {
-            // Display a message box to the user
-            vscode.window.showErrorMessage(errorMessage);
-            logErrorOutput(detailedMessage);
+            logErrorOutput('Impex execution failed (' + editor.document.fileName + '): ' + detailedMessage);
         });
     });
     context.subscriptions.push(validateImpex);
 
+    // FLEXIBLE SEARCH
     let runFlexibleSearchQuery = vscode.commands.registerCommand('extension.runFlexibleSearchQuery', function () {
         let editor = vscode.window.activeTextEditor;
 
         if (!editor) {
-            vscode.window.showInformationMessage('No impex to validate');
+            vscode.window.showInformationMessage('No flexible search query to run');
             return; // No open text editor
         }
 
         var editorContent = getEditorContent(editor);
 
-        hacUtil.executeFlexibleSearch(editorContent, function (queryResult) {
-            vscode.window.showInformationMessage('Impex validated successfully.');
-            logOutput("Flexible search result:");
-            logOutput(queryResult);
+        hacUtil.executeFlexibleSearch(editorContent, true, function (queryResult) {
+            logOutput("Flexible search result (" + editor.document.fileName + "): \n" + queryResult);
         }, function (errorMessage, detailedMessage) {
-            // Display a message box to the user
-            vscode.window.showErrorMessage(errorMessage);
-            logErrorOutput(detailedMessage);
+            logErrorOutput('Flexible search failed (' + editor.document.fileName + '): ' + detailedMessage);
         });
     });
     context.subscriptions.push(runFlexibleSearchQuery);
+
+    // RAW SQL SEARCH
+    let runRawSqlQuery = vscode.commands.registerCommand('extension.runRawSqlQuery', function () {
+        let editor = vscode.window.activeTextEditor;
+
+        if (!editor) {
+            vscode.window.showInformationMessage('No raw SQL query  to run');
+            return; // No open text editor
+        }
+
+        var editorContent = getEditorContent(editor);
+
+        hacUtil.executeFlexibleSearch(editorContent, false, function (queryResult) {
+            logOutput("Raw SQL query result (" + editor.document.fileName + "): \n" + queryResult);
+        }, function (errorMessage, detailedMessage) {
+            logErrorOutput('Raw SQL query failed (' + editor.document.fileName + '): ' + detailedMessage);
+        });
+    });
+    context.subscriptions.push(runRawSqlQuery);
 
 }
 exports.activate = activate;
