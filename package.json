@@ -58,10 +58,8 @@
                     "flexQuery"
                 ],
                 "extensions": [
-                    ".fsq",
-                    "flexQuery",
-                    "sql",
-                    "flex"
+                    ".sql",
+                    ".fsql"
                 ],
                 "configuration": "./language-configuration.json"
             }
@@ -79,7 +77,27 @@
                 "command": "extension.runFlexibleSearchQuery",
                 "title": "Hybris: run flexible search query"
             }
-        ]
+        ],
+        "menus": {
+            "commandPalette": [
+                {
+                    "when": "resourceExtname == .impex",
+                    "command": "extension.importImpex"
+                },
+                {
+                    "when": "resourceExtname == .impex",
+                    "command": "extension.validateImpex"
+                },
+                {
+                    "when": "resourceExtname == .sql",
+                    "command": "extension.runFlexibleSearchQuery"
+                },
+                {
+                    "when": "resourceExtname == .fsql",
+                    "command": "extension.runFlexibleSearchQuery"
+                }
+            ]
+        }
     },
     "scripts": {
         "postinstall": "node ./node_modules/vscode/bin/install",

@@ -206,7 +206,7 @@ module.exports = class HacUtil {
                     commit: false,
                     flexibleSearchQuery: query,
                     locale: "de",
-                    maxCount: 200,
+                    maxCount: null,
                     sqlQuery: "",
                     user: "admin"
                 };

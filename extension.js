@@ -5,6 +5,8 @@ const vscode = require('vscode');
 
 function activate(context) {
 
+    console.log('vscode-hybris-tools activated');
+
     var hacUtil = new HacUtil();
 
     let outputChannel = vscode.window.createOutputChannel("hybris-tools");
