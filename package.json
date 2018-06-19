@@ -13,7 +13,9 @@
     "extensionDepenencies": [],
     "activationEvents": [
         "onLanguage:impex",
-        "onLanguage:flexibleSearchQuery"
+        "onLanguage:flexibleSearchQuery",
+        "onLanguage:groovy",
+        "onLanguage:itemTypeDefinition"
     ],
     "main": "./extension",
     "contributes": {
@@ -49,8 +51,7 @@
                 ],
                 "extensions": [
                     ".impex"
-                ],
-                "configuration": "./language-configuration.json"
+                ]
             },
             {
                 "id": "flexibleSearchQuery",
@@ -60,8 +61,25 @@
                 "extensions": [
                     ".sql",
                     ".fsql"
+                ]
+            },
+            {
+                "id": "groovy",
+                "aliases": [
+                    "Groovy"
                 ],
-                "configuration": "./language-configuration.json"
+                "extensions": [
+                    ".grovvy"
+                ]
+            },
+            {
+                "id": "itemTypeDefinition",
+                "aliases": [
+                    "items-xml"
+                ],
+                "filenamePatterns": [
+                    "*-items.xml"
+                ]
             }
         ],
         "commands": [
@@ -84,6 +102,10 @@
             {
                 "command": "extension.analyzePK",
                 "title": "Hybris: analyze PK ..."
+            },
+            {
+                "command": "extension.executeGroovyScript",
+                "title": "Hybris: execute Groovy script"
             }
         ],
         "menus": {
@@ -107,6 +129,10 @@
                 {
                     "when": "resourceExtname == .sql",
                     "command": "extension.runRawSqlQuery"
+                },
+                {
+                    "when": "resourceExtname == .groovy",
+                    "command": "extension.executeGroovyScript"
                 }
             ]
         }

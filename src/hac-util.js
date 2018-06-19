@@ -242,6 +242,47 @@ module.exports = class HacUtil {
         });
     }
 
+    executeGroovyScript(script, scriptType, successFunc, errorFunc) {
+        let self = this;
+
+        self.fetchCsrfTokenSessionId(function (csrfToken, sessionId) {
+            self.login(csrfToken, sessionId, function (csrfToken, sessionId) {
+                let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url")
+                var hacImpexActionUrl;
+
+                if (hacUrl) {
+                    hacImpexActionUrl = hacUrl + "/console/scripting/execute";
+                }
+
+                let formContent = {
+                    _csrf: csrfToken,
+                    commit: false,
+                    scriptType: scriptType,
+                    script: script
+                };
+
+                let headers = {
+                    Cookie: sessionId
+                };
+
+                request.post({ url: hacImpexActionUrl, headers: headers, form: formContent }, function (error, response, body) {
+                    var result = JSON.parse(body);
+
+                    if (response.statusCode == 200 && result.stacktraceText == "") {
+                        successFunc(result.executionResult, result.outputText);
+                    } else {
+                        errorFunc("Script execution failed", result.stacktraceText);
+                    }
+                });
+            }, function (statusCode) {
+                errorFunc('Could not login with stored credentials (http status=' + statusCode + ').');
+            });
+        }, function (statusCode) {
+            errorFunc('Could not retrieve CSFR token (http status=' + statusCode + ').');
+        });
+    }
+
+
     json2AsciiTable(queryResultObject) {
         var table = new AsciiTable(new Date(), null);
         var headers = ["#"].concat(queryResultObject.headers);
