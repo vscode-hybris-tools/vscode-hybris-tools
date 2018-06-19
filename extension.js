@@ -109,6 +109,21 @@ function activate(context) {
     });
     context.subscriptions.push(runRawSqlQuery);
 
+    // ANALYZE PK
+    let analyzePK = vscode.commands.registerCommand('extension.analyzePK', function () {
+        vscode.window.showInputBox({ 'placeHolder': 'Please enter PK ' }).then(function (value) {
+            if (value !== undefined) {
+                hacUtil.analyzePK(value, function (info) {
+                    logOutput("PK: " + info);
+                }, function (errorMessage, detailedMessage) {
+                    logErrorOutput('Could not analyze PK: ' + detailedMessage);
+                });
+            }
+        });
+
+    });
+    context.subscriptions.push(analyzePK);
+
 }
 exports.activate = activate;
 

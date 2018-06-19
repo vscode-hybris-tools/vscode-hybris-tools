@@ -80,6 +80,10 @@
             {
                 "command": "extension.runRawSqlQuery",
                 "title": "Hybris: run raw SQL query"
+            },
+            {
+                "command": "extension.analyzePK",
+                "title": "Hybris: analyze PK ..."
             }
         ],
         "menus": {

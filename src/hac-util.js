@@ -139,7 +139,6 @@ module.exports = class HacUtil {
                     var impexResult = html(".impexResult > pre").text();
 
                     if (response.statusCode == 200 && !impexResult) {
-                        //  successfully logged in
                         successFunc();
                     } else {
                         errorFunc("Import has encountered problems", "Import error: " + impexResult.trim());
@@ -187,7 +186,6 @@ module.exports = class HacUtil {
                     var impexResult = html("span#validationResultMsg[data-level='error']").attr("data-result");
 
                     if (response.statusCode == 200 && impexResult === undefined) {
-                        //  successfully logged in
                         successFunc();
                     } else {
                         errorFunc("Validation has encountered problems", "Validation error:" + (impexResult !== undefined ? impexResult.trim() : ""));
@@ -227,12 +225,10 @@ module.exports = class HacUtil {
                     Cookie: sessionId
                 };
 
-                // validate impex
                 request.post({ url: hacImpexActionUrl, headers: headers, form: formContent }, function (error, response, body) {
                     var result = JSON.parse(body);
 
                     if (response.statusCode == 200 && result.exception == null) {
-                        //  successfully logged in
                         successFunc(self.json2AsciiTable(result));
                     } else {
                         errorFunc("Flexible search query could not be executed", result.exception.message);
@@ -257,5 +253,43 @@ module.exports = class HacUtil {
         }
 
         return table.toString();
+    }
+
+    analyzePK(pk, successFunc, errorFunc) {
+        let self = this;
+
+        self.fetchCsrfTokenSessionId(function (csrfToken, sessionId) {
+            self.login(csrfToken, sessionId, function (csrfToken, sessionId) {
+                let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url")
+                var hacImpexActionUrl;
+
+                if (hacUrl) {
+                    hacImpexActionUrl = hacUrl + "/platform/pkanalyzer/analyze";
+                }
+
+                let formContent = {
+                    _csrf: csrfToken,
+                    pkString: pk
+                };
+
+                let headers = {
+                    Cookie: sessionId
+                };
+
+                request.post({ url: hacImpexActionUrl, headers: headers, form: formContent }, function (error, response, body) {
+                    if (response.statusCode == 200) {
+                        var result = JSON.parse(body);
+                        
+                        successFunc("Composed Type: " + result.pkComposedTypeCode);
+                    } else {
+                        errorFunc("Could not analyze PK", pk);
+                    }
+                });
+            }, function (statusCode) {
+                errorFunc('Could not login with stored credentials (http status=' + statusCode + ').');
+            });
+        }, function (statusCode) {
+            errorFunc('Could not retrieve CSFR token (http status=' + statusCode + ').');
+        });
     }
 }
