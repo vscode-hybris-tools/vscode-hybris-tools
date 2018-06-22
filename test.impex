@@ -1,3 +1,0 @@
-INSERT_UPDATE Customer ; uid[unique=true]; name
-                       ; test4-customer  ; a
-                       ; test4           ; a

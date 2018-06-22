@@ -1,7 +1,7 @@
 # Change Log
-All notable changes to the "vscode-hybris-tools" extension will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-## [Unreleased]
-- Initial release
+## [0.1] - 2018-06-22
+- ImpEx import and validation
+- Groovy shell script execution
+- Flexible search execution
+- Raw SQL query execution

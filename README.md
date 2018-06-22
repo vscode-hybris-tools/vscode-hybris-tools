@@ -1,26 +1,23 @@
 # vscode-hybris-tools README
 
 This vscode extension adds several useful commands related to SAP hybris development:
-* Validate open Impex files
-* Import open Impex files
-* Run Scripts (Beanshell, Groovey)
-* Run Flexible Search queries
+* Validate ImpEx from the editor
+* Import ImpEx from the editor
+* Run Groovey scripts
+* Run Flexible Search queries and raw SQL queries from the editor
 
-Furthermore it depends on the [ImpEx support](https://github.com/simplyRoba/ImpExSupport) extension for ImpEx syntax highlighting.
+For syntax highlighting this extension is recommended: [ImpEx support](https://github.com/simplyRoba/ImpExSupport).
 
-## Requirements
-
-* impex-support
+## Dependencies
 
 ## Extension Settings
 
 This extension contributes the following settings:
 
-* `hybris.hac.url`
-* `hybris.hac.username`
-* `hybris.hac.password`
+* `hybris.hac.url`: the url to the local hybris HAC extension
+* `hybris.hac.username`: the hybris HAC user name
+* `hybris.hac.password`: the hybris HAC user password
 
 ## Known Issues
 
-Script and Flexible Search support not yet ready
-
+* Output/feedback still a bit clunky
