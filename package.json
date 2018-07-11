@@ -2,7 +2,7 @@
     "name": "vscode-hybris-tools",
     "displayName": "vscode-hybris-tools",
     "description": "",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "publisher": "mojo2012",
     "engines": {
         "vscode": "^1.23.0"
@@ -10,7 +10,17 @@
     "categories": [
         "Other"
     ],
+    "license": "MIT License",
     "extensionDepenencies": [],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/mojo2012/vscode-hybris-tools"
+    },
+    "author": {
+        "email": "meister.fuchs@gmail.com",
+        "name": "Matthias Fuchs",
+        "url": "https://github.com/mojo2012"
+    },
     "activationEvents": [
         "onLanguage:impex",
         "onLanguage:flexibleSearchQuery",

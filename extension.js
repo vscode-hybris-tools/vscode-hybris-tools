@@ -46,8 +46,8 @@ function activate(context) {
 
         hacUtil.executeImpex(editorContent, function () {
             logOutput('Impex executed successfully: ' + editor.document.fileName);
-        }, function (errorMessage, impexResult) {
-            logErrorOutput('Impex execution failed (' + editor.document.fileName + '): ' + impexResult);
+        }, function (message) {
+            logErrorOutput('Impex execution failed (' + editor.document.fileName + '): ' + message);
         });
     });
     context.subscriptions.push(importImpex);
@@ -65,8 +65,8 @@ function activate(context) {
 
         hacUtil.executeImpexValidation(editorContent, function () {
             logOutput('Impex validated successfully: ' + editor.document.fileName);
-        }, function (errorMessage, detailedMessage) {
-            logErrorOutput('Impex execution failed (' + editor.document.fileName + '): ' + detailedMessage);
+        }, function (message) {
+            logErrorOutput('Impex execution failed (' + editor.document.fileName + '): ' + message);
         });
     });
     context.subscriptions.push(validateImpex);
@@ -84,8 +84,8 @@ function activate(context) {
 
         hacUtil.executeFlexibleSearch(editorContent, true, function (queryResult) {
             logOutput("Flexible search result (" + editor.document.fileName + "): \n" + queryResult);
-        }, function (errorMessage, detailedMessage) {
-            logErrorOutput('Flexible search failed (' + editor.document.fileName + '): ' + detailedMessage);
+        }, function (message) {
+            logErrorOutput('Flexible search failed (' + editor.document.fileName + '): ' + message);
         });
     });
     context.subscriptions.push(runFlexibleSearchQuery);
@@ -103,8 +103,8 @@ function activate(context) {
 
         hacUtil.executeFlexibleSearch(editorContent, false, function (queryResult) {
             logOutput("Raw SQL query result (" + editor.document.fileName + "): \n" + queryResult);
-        }, function (errorMessage, detailedMessage) {
-            logErrorOutput('Raw SQL query failed (' + editor.document.fileName + '): ' + detailedMessage);
+        }, function (message) {
+            logErrorOutput('Raw SQL query failed (' + editor.document.fileName + '): ' + message);
         });
     });
     context.subscriptions.push(runRawSqlQuery);
@@ -122,8 +122,8 @@ function activate(context) {
 
         hacUtil.executeGroovyScript(editorContent, "groovy", function (result, outputText) {
             logOutput("Groovy script (" + editor.document.fileName + ") returned: " + result + "\nOutput:\n" + outputText);
-        }, function (errorMessage, detailedMessage) {
-            logErrorOutput('Groovy script failed (' + editor.document.fileName + '): ' + detailedMessage);
+        }, function (message) {
+            logErrorOutput('Groovy script failed (' + editor.document.fileName + '): ' + message);
         });
     });
     context.subscriptions.push(executeGroovyScript);
@@ -134,8 +134,8 @@ function activate(context) {
             if (value !== undefined) {
                 hacUtil.analyzePK(value, function (info) {
                     logOutput("PK: " + info);
-                }, function (errorMessage, detailedMessage) {
-                    logErrorOutput('Could not analyze PK: ' + detailedMessage);
+                }, function (message) {
+                    logErrorOutput('Could not analyze PK: ' + message);
                 });
             }
         });

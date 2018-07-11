@@ -17,20 +17,23 @@ module.exports = class HacUtil {
         return html("input[name=_csrf]").val();
     }
 
-    createErrorInfo(error, response) {
+    createErrorInfo(errorMessage, response) {
         var ret = {};
 
-        if (error) {
-            ret.error = error;
+        if (errorMessage) {
+            ret.error = errorMessage;
         }
 
         if (response) {
-            ret.responseStatusCode = response.sstatusCode;
+            ret.responseStatusCode = response.statusCode;
         }
+
+        return ret;
     }
 
     fetchCsrfTokenSessionId(successFunc, errorFunc) {
-        let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url")
+        let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url");
+        // let hacUrl = "http://httpstat.us/404";
 
         let self = this;
 
@@ -41,7 +44,8 @@ module.exports = class HacUtil {
                 let sessionId = self.extractSessionId(response);
                 successFunc(csfr, sessionId);
             } else {
-                errorFunc(self.createErrorInfo(error, response.statusCode));
+                var errorMessage = error ? error.message : "Unknown error";
+                errorFunc(self.createErrorInfo(errorMessage, response));
             }
         });
     }
@@ -148,14 +152,14 @@ module.exports = class HacUtil {
                     if (response.statusCode == 200 && !impexResult) {
                         successFunc();
                     } else {
-                        errorFunc("Import has encountered problems", "Import error: " + impexResult.trim());
+                        errorFunc("\n" + (impexResult !== undefined ? impexResult.trim() : "<Unknown error>"));
                     }
                 });
             }, function (statusCode) {
                 errorFunc('Could not login with stored credentials (http status=' + statusCode + ').');
             });
-        }, function (statusCode) {
-            errorFunc('Could not retrieve CSFR token (http status=' + statusCode + ').');
+        }, function (error) {
+            errorFunc('Could not retrieve CSFR token (http status=' + error.responseStatusCode + '): ' + error.error);
         });
     }
 
@@ -195,14 +199,14 @@ module.exports = class HacUtil {
                     if (response.statusCode == 200 && impexResult === undefined) {
                         successFunc();
                     } else {
-                        errorFunc("Validation has encountered problems", "Validation error:" + (impexResult !== undefined ? impexResult.trim() : ""));
+                        errorFunc("\n" + (impexResult !== undefined ? impexResult.trim() : "<Unknown error>"));
                     }
                 });
             }, function (statusCode) {
                 errorFunc('Could not login with stored credentials (http status=' + statusCode + ').');
             });
-        }, function (statusCode) {
-            errorFunc('Could not retrieve CSFR token (http status=' + statusCode + ').');
+        }, function (error) {
+            errorFunc('Could not retrieve CSFR token (http status=' + error.responseStatusCode + '): ' + error.error);
         });
     }
 
@@ -240,7 +244,7 @@ module.exports = class HacUtil {
 
                         successFunc(output);
                     } else {
-                        errorFunc("Flexible search query could not be executed", result.exception.message);
+                        errorFunc("Flexible search query could not be executed: " + result.exception.message);
                     }
                 });
             }, function (statusCode) {
@@ -280,7 +284,7 @@ module.exports = class HacUtil {
                     if (response.statusCode == 200 && result.stacktraceText == "") {
                         successFunc(result.executionResult, result.outputText);
                     } else {
-                        errorFunc("Script execution failed", result.stacktraceText);
+                        errorFunc("Script execution failed: " + result.stacktraceText);
                     }
                 });
             }, function (statusCode) {
@@ -332,7 +336,7 @@ module.exports = class HacUtil {
 
                         successFunc("Composed Type: " + result.pkComposedTypeCode);
                     } else {
-                        errorFunc("Could not analyze PK", pk);
+                        errorFunc("Could not analyze PK: " + pk);
                     }
                 });
             }, function (statusCode) {
