@@ -2,7 +2,7 @@
     "name": "vscode-hybris-tools",
     "displayName": "vscode-hybris-tools",
     "description": "",
-    "version": "0.0.1",
+    "version": "0.2.4",
     "publisher": "mojo2012",
     "keywords": [
         "hybris",
@@ -10,10 +10,14 @@
         "flexible search",
         "groovy"
     ],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/mojo2012/vscode-hybris-tools"
-    },
+    "homepage": "https://github.com/mojo2012/vscode-hybris-tools",
+    "maintainers": [
+        {
+            "email": "meister.fuchs@gmail.com",
+            "name": "Matthias Fuchs",
+            "url": "https://github.com/mojo2012"
+        }
+    ],
     "readme": "README.md",
     "engines": {
         "vscode": "^1.23.0"
@@ -22,7 +26,17 @@
     "categories": [
         "Other"
     ],
+    "license": "MIT",
     "extensionDepenencies": [],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/mojo2012/vscode-hybris-tools"
+    },
+    "author": {
+        "email": "meister.fuchs@gmail.com",
+        "name": "Matthias Fuchs",
+        "url": "https://github.com/mojo2012"
+    },
     "activationEvents": [
         "onLanguage:impex",
         "onLanguage:flexibleSearchQuery",
@@ -155,7 +169,7 @@
     },
     "devDependencies": {
         "@types/mocha": "^2.2.42",
-        "@types/node": "^7.0.66",
+        "@types/node": "^7.0.67",
         "eslint": "^4.11.0",
         "typescript": "^2.9.2",
         "vscode": "^1.1.6"

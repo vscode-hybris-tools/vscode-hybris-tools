@@ -17,31 +17,35 @@ module.exports = class HacUtil {
         return html("input[name=_csrf]").val();
     }
 
-    createErrorInfo(error, response) {
+    createErrorInfo(errorMessage, response) {
         var ret = {};
 
-        if (error) {
-            ret.error = error;
+        if (errorMessage) {
+            ret.error = errorMessage;
         }
 
         if (response) {
-            ret.responseStatusCode = response.sstatusCode;
+            ret.responseStatusCode = response.statusCode;
         }
+
+        return ret;
     }
 
     fetchCsrfTokenSessionId(successFunc, errorFunc) {
-        let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url")
+        let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url");
+        // let hacUrl = "http://httpstat.us/404";
 
         let self = this;
 
         // get the login form and extract the CSRF token
-        request(hacUrl, { timeout: 1000 }, function (error, response, body) {
+        request(hacUrl, { timeout: 1000, strictSSL: false }, function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 let csfr = self.extractCsrfToken(body);
                 let sessionId = self.extractSessionId(response);
                 successFunc(csfr, sessionId);
             } else {
-                errorFunc(self.createErrorInfo(error, response.statusCode));
+                var errorMessage = error ? error.message : "Unknown error";
+                errorFunc(self.createErrorInfo(errorMessage, response));
             }
         });
     }
@@ -58,7 +62,7 @@ module.exports = class HacUtil {
         let self = this;
 
         // get the login form and extract the CSRF token
-        request({ url: hacImpexUrl, headers: headers }, function (error, response, body) {
+        request({ url: hacImpexUrl, headers: headers, strictSSL: false }, function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 let csfr = self.extractCsrfToken(body);
                 successFunc(csfr, sessionId);
@@ -92,7 +96,7 @@ module.exports = class HacUtil {
         let self = this;
 
         // login
-        request.post({ url: hacLoginUrl, headers: headers, form: credentials }, function (error, response, body) {
+        request.post({ url: hacLoginUrl, strictSSL: false, headers: headers, form: credentials }, function (error, response, body) {
             if (response.statusCode == 302) {
                 //  successfully logged in
 
@@ -114,11 +118,18 @@ module.exports = class HacUtil {
                 var hacImpexActionUrl;
 
                 if (hacUrl) {
-                    hacImpexActionUrl = hacUrl + "/console/impex/import";
+                    hacImpexActionUrl = hacUrl + "/console/impex/import/upload?_csrf=" + csrfToken;
+                    // hacImpexActionUrl = "http://localhost:3000";
                 }
 
                 let formContent = {
-                    scriptContent: impexContent,
+                    file: {
+                        value: impexContent,
+                        options: {
+                            filename: 'vscode-import.impex',
+                            contentType: 'application/octet-stream'
+                        }
+                    },
                     _csrf: csrfToken,
                     _distributedMode: "on",
                     _enableCodeExecution: "on",
@@ -134,21 +145,21 @@ module.exports = class HacUtil {
                 };
 
                 // import impex
-                request.post({ url: hacImpexActionUrl, headers: headers, form: formContent }, function (error, response, body) {
+                request.post({ url: hacImpexActionUrl, strictSSL: false, headers: headers, formData: formContent }, function (error, response, body) {
                     var html = cheerio.load(body);
                     var impexResult = html(".impexResult > pre").text();
 
                     if (response.statusCode == 200 && !impexResult) {
                         successFunc();
                     } else {
-                        errorFunc("Import has encountered problems", "Import error: " + impexResult.trim());
+                        errorFunc("\n" + (impexResult !== undefined ? impexResult.trim() : "<Unknown error>"));
                     }
                 });
             }, function (statusCode) {
                 errorFunc('Could not login with stored credentials (http status=' + statusCode + ').');
             });
-        }, function (statusCode) {
-            errorFunc('Could not retrieve CSFR token (http status=' + statusCode + ').');
+        }, function (error) {
+            errorFunc('Could not retrieve CSFR token (http status=' + error.responseStatusCode + '): ' + error.error);
         });
     }
 
@@ -181,21 +192,21 @@ module.exports = class HacUtil {
                 };
 
                 // validate impex
-                request.post({ url: hacImpexActionUrl, headers: headers, form: formContent }, function (error, response, body) {
+                request.post({ url: hacImpexActionUrl, strictSSL: false, headers: headers, form: formContent }, function (error, response, body) {
                     var html = cheerio.load(body);
                     var impexResult = html("span#validationResultMsg[data-level='error']").attr("data-result");
 
                     if (response.statusCode == 200 && impexResult === undefined) {
                         successFunc();
                     } else {
-                        errorFunc("Validation has encountered problems", "Validation error:" + (impexResult !== undefined ? impexResult.trim() : ""));
+                        errorFunc("\n" + (impexResult !== undefined ? impexResult.trim() : "<Unknown error>"));
                     }
                 });
             }, function (statusCode) {
                 errorFunc('Could not login with stored credentials (http status=' + statusCode + ').');
             });
-        }, function (statusCode) {
-            errorFunc('Could not retrieve CSFR token (http status=' + statusCode + ').');
+        }, function (error) {
+            errorFunc('Could not retrieve CSFR token (http status=' + error.responseStatusCode + '): ' + error.error);
         });
     }
 
@@ -225,13 +236,15 @@ module.exports = class HacUtil {
                     Cookie: sessionId
                 };
 
-                request.post({ url: hacImpexActionUrl, headers: headers, form: formContent }, function (error, response, body) {
+                request.post({ url: hacImpexActionUrl, strictSSL: false, headers: headers, form: formContent }, function (error, response, body) {
                     var result = JSON.parse(body);
 
                     if (response.statusCode == 200 && result.exception == null) {
-                        successFunc(self.json2AsciiTable(result));
+                        var output = result.resultList.length > 0 ? self.json2AsciiTable(result) : "No results returned."
+
+                        successFunc(output);
                     } else {
-                        errorFunc("Flexible search query could not be executed", result.exception.message);
+                        errorFunc("Flexible search query could not be executed: " + result.exception.message);
                     }
                 });
             }, function (statusCode) {
@@ -265,13 +278,13 @@ module.exports = class HacUtil {
                     Cookie: sessionId
                 };
 
-                request.post({ url: hacImpexActionUrl, headers: headers, form: formContent }, function (error, response, body) {
+                request.post({ url: hacImpexActionUrl, strictSSL: false, headers: headers, form: formContent }, function (error, response, body) {
                     var result = JSON.parse(body);
 
                     if (response.statusCode == 200 && result.stacktraceText == "") {
                         successFunc(result.executionResult, result.outputText);
                     } else {
-                        errorFunc("Script execution failed", result.stacktraceText);
+                        errorFunc("Script execution failed: " + result.stacktraceText);
                     }
                 });
             }, function (statusCode) {
@@ -317,13 +330,13 @@ module.exports = class HacUtil {
                     Cookie: sessionId
                 };
 
-                request.post({ url: hacImpexActionUrl, headers: headers, form: formContent }, function (error, response, body) {
+                request.post({ url: hacImpexActionUrl, strictSSL: false, headers: headers, form: formContent }, function (error, response, body) {
                     if (response.statusCode == 200) {
                         var result = JSON.parse(body);
-                        
+
                         successFunc("Composed Type: " + result.pkComposedTypeCode);
                     } else {
-                        errorFunc("Could not analyze PK", pk);
+                        errorFunc("Could not analyze PK: " + pk);
                     }
                 });
             }, function (statusCode) {
