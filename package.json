@@ -2,7 +2,7 @@
     "name": "vscode-hybris-tools",
     "displayName": "vscode-hybris-tools",
     "description": "",
-    "version": "0.1",
+    "version": "0.2.0",
     "publisher": "mojo2012",
     "engines": {
         "vscode": "^1.23.0"

@@ -114,11 +114,18 @@ module.exports = class HacUtil {
                 var hacImpexActionUrl;
 
                 if (hacUrl) {
-                    hacImpexActionUrl = hacUrl + "/console/impex/import";
+                    hacImpexActionUrl = hacUrl + "/console/impex/import/upload?_csrf=" + csrfToken;
+                    // hacImpexActionUrl = "http://localhost:3000";
                 }
 
                 let formContent = {
-                    scriptContent: impexContent,
+                    file: {
+                        value: impexContent,
+                        options: {
+                            filename: 'vscode-import.impex',
+                            contentType: 'application/octet-stream'
+                        }
+                    },
                     _csrf: csrfToken,
                     _distributedMode: "on",
                     _enableCodeExecution: "on",
@@ -134,7 +141,7 @@ module.exports = class HacUtil {
                 };
 
                 // import impex
-                request.post({ url: hacImpexActionUrl, headers: headers, form: formContent }, function (error, response, body) {
+                request.post({ url: hacImpexActionUrl, headers: headers, formData: formContent }, function (error, response, body) {
                     var html = cheerio.load(body);
                     var impexResult = html(".impexResult > pre").text();
 
@@ -229,7 +236,9 @@ module.exports = class HacUtil {
                     var result = JSON.parse(body);
 
                     if (response.statusCode == 200 && result.exception == null) {
-                        successFunc(self.json2AsciiTable(result));
+                        var output = result.resultList.length > 0 ? self.json2AsciiTable(result) : "No results returned."
+
+                        successFunc(output);
                     } else {
                         errorFunc("Flexible search query could not be executed", result.exception.message);
                     }
@@ -320,7 +329,7 @@ module.exports = class HacUtil {
                 request.post({ url: hacImpexActionUrl, headers: headers, form: formContent }, function (error, response, body) {
                     if (response.statusCode == 200) {
                         var result = JSON.parse(body);
-                        
+
                         successFunc("Composed Type: " + result.pkComposedTypeCode);
                     } else {
                         errorFunc("Could not analyze PK", pk);
