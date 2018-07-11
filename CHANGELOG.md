@@ -1,5 +1,8 @@
 # Change Log
 
+## [0.2.3] - 2018-07.11
+- disable HTTPS certificate check - this time for real ... :-D
+
 ## [0.2.2] - 2018-07.11
 - disable HTTPS certificate check
 

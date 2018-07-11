@@ -38,7 +38,7 @@ module.exports = class HacUtil {
         let self = this;
 
         // get the login form and extract the CSRF token
-        request(hacUrl, { timeout: 1000, strictSSL: true }, function (error, response, body) {
+        request(hacUrl, { timeout: 1000, strictSSL: false }, function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 let csfr = self.extractCsrfToken(body);
                 let sessionId = self.extractSessionId(response);
@@ -62,7 +62,7 @@ module.exports = class HacUtil {
         let self = this;
 
         // get the login form and extract the CSRF token
-        request({ url: hacImpexUrl, headers: headers, strictSSL: true }, function (error, response, body) {
+        request({ url: hacImpexUrl, headers: headers, strictSSL: false }, function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 let csfr = self.extractCsrfToken(body);
                 successFunc(csfr, sessionId);
@@ -96,7 +96,7 @@ module.exports = class HacUtil {
         let self = this;
 
         // login
-        request.post({ url: hacLoginUrl, strictSSL: true, headers: headers, form: credentials }, function (error, response, body) {
+        request.post({ url: hacLoginUrl, strictSSL: false, headers: headers, form: credentials }, function (error, response, body) {
             if (response.statusCode == 302) {
                 //  successfully logged in
 
@@ -145,7 +145,7 @@ module.exports = class HacUtil {
                 };
 
                 // import impex
-                request.post({ url: hacImpexActionUrl, strictSSL: true, headers: headers, formData: formContent }, function (error, response, body) {
+                request.post({ url: hacImpexActionUrl, strictSSL: false, headers: headers, formData: formContent }, function (error, response, body) {
                     var html = cheerio.load(body);
                     var impexResult = html(".impexResult > pre").text();
 
@@ -192,7 +192,7 @@ module.exports = class HacUtil {
                 };
 
                 // validate impex
-                request.post({ url: hacImpexActionUrl, strictSSL: true, headers: headers, form: formContent }, function (error, response, body) {
+                request.post({ url: hacImpexActionUrl, strictSSL: false, headers: headers, form: formContent }, function (error, response, body) {
                     var html = cheerio.load(body);
                     var impexResult = html("span#validationResultMsg[data-level='error']").attr("data-result");
 
@@ -236,7 +236,7 @@ module.exports = class HacUtil {
                     Cookie: sessionId
                 };
 
-                request.post({ url: hacImpexActionUrl, strictSSL: true, headers: headers, form: formContent }, function (error, response, body) {
+                request.post({ url: hacImpexActionUrl, strictSSL: false, headers: headers, form: formContent }, function (error, response, body) {
                     var result = JSON.parse(body);
 
                     if (response.statusCode == 200 && result.exception == null) {
@@ -278,7 +278,7 @@ module.exports = class HacUtil {
                     Cookie: sessionId
                 };
 
-                request.post({ url: hacImpexActionUrl, strictSSL: true, headers: headers, form: formContent }, function (error, response, body) {
+                request.post({ url: hacImpexActionUrl, strictSSL: false, headers: headers, form: formContent }, function (error, response, body) {
                     var result = JSON.parse(body);
 
                     if (response.statusCode == 200 && result.stacktraceText == "") {
@@ -330,7 +330,7 @@ module.exports = class HacUtil {
                     Cookie: sessionId
                 };
 
-                request.post({ url: hacImpexActionUrl, strictSSL: true, headers: headers, form: formContent }, function (error, response, body) {
+                request.post({ url: hacImpexActionUrl, strictSSL: false, headers: headers, form: formContent }, function (error, response, body) {
                     if (response.statusCode == 200) {
                         var result = JSON.parse(body);
 
