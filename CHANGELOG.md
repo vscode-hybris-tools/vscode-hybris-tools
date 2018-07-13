@@ -1,5 +1,8 @@
 # Change Log
 
+## [0.2.5] - 2018-07.13
+- spell and readme fixes
+
 ## [0.2.4] - 2018-07.11
 - package.json fixes
 - readme updated

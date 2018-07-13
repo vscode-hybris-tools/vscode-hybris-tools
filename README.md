@@ -3,7 +3,7 @@
 This vscode extension adds several useful commands related to SAP hybris development:
 * Validate ImpEx from the editor
 * Import ImpEx from the editor
-* Run Groovey scripts
+* Run Groovy scripts
 * Run Flexible Search queries and raw SQL queries from the editor
 * Run PK analyzer
 
@@ -35,3 +35,6 @@ This extension contributes the following settings:
 ## Known Issues
 
 * Output/feedback still a bit clunky
+
+## Disclaimer
+I'm not affiliated with SAP in any way. The logo and names are probably trademarks. I hope it's OK to use them. If not, please don't hesitate to contact me (but don't sue me!).
