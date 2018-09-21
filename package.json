@@ -10,7 +10,7 @@
     "categories": [
         "Other"
     ],
-    "license": "MIT License",
+    "license": "MIT",
     "extensionDepenencies": [],
     "repository": {
         "type": "git",
@@ -47,6 +47,11 @@
                         "type": "string",
                         "default": "nimda",
                         "description": "The password used for login into the HAC"
+                    },
+                    "hybris.hac.http.timeout": {
+                        "type": "integer",
+                        "default": 10000,
+                        "description": "The HTTP sockettimeout."
                     }
                 }
             }
@@ -153,15 +158,15 @@
     },
     "devDependencies": {
         "@types/mocha": "^2.2.42",
-        "@types/node": "^7.0.66",
+        "@types/node": "^7.0.70",
         "eslint": "^4.11.0",
         "typescript": "^2.9.2",
-        "vscode": "^1.1.6"
+        "vscode": "^1.1.21"
     },
     "dependencies": {
         "ascii-table": "0.0.9",
         "cheerio": "^1.0.0-rc.2",
         "console-stamp": "^0.2.6",
-        "request": "^2.87.0"
+        "request": "^2.88.0"
     }
 }
