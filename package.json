@@ -2,11 +2,27 @@
     "name": "vscode-hybris-tools",
     "displayName": "vscode-hybris-tools",
     "description": "",
-    "version": "0.2.3",
+    "version": "0.2.5",
     "publisher": "mojo2012",
+    "keywords": [
+        "hybris",
+        "impex",
+        "flexible search",
+        "groovy"
+    ],
+    "homepage": "https://github.com/mojo2012/vscode-hybris-tools",
+    "maintainers": [
+        {
+            "email": "meister.fuchs@gmail.com",
+            "name": "Matthias Fuchs",
+            "url": "https://github.com/mojo2012"
+        }
+    ],
+    "readme": "README.md",
     "engines": {
         "vscode": "^1.23.0"
     },
+    "icon": "resources/hybris-icon.png",
     "categories": [
         "Other"
     ],
