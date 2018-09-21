@@ -25,6 +25,7 @@ This extension contributes the following settings:
 * `hybris.hac.url`: the url to the local hybris HAC extension
 * `hybris.hac.username`: the hybris HAC user name
 * `hybris.hac.password`: the hybris HAC user password
+* `hybris.hac.http.timeout`: the HTTP socket timeout. 
 
 ## Future ideas
 * Support multiple hybris HAC endpoints
