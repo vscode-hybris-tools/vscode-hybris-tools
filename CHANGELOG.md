@@ -1,5 +1,8 @@
 # Change Log
 
+## [0.2.6] - 2019-03-15
+- dependency updates (mostly security fixes)
+
 ## [0.2.5] - 2018-07-13
 - spell and readme fixes
 
