@@ -2,7 +2,7 @@
     "name": "vscode-hybris-tools",
     "displayName": "vscode-hybris-tools",
     "description": "",
-    "version": "0.2.7",
+    "version": "0.3.0",
     "publisher": "mojo2012",
     "keywords": [
         "hybris",
@@ -43,7 +43,7 @@
         "onLanguage:groovy",
         "onLanguage:itemTypeDefinition"
     ],
-    "main": "./extension",
+    "main": "./dist/extension",
     "contributes": {
         "configuration": [
             {
@@ -169,17 +169,22 @@
         }
     },
     "scripts": {
+        "vscode:prepublish": "webpack --mode production",
+        "webpack": "webpack --mode development",
+        "webpack-dev": "webpack --mode development --watch",
         "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "node ./node_modules/vscode/bin/test"
+        "test": "node ./node_modules/vscode/bin/test",
+        "test-compile": "tsc -p ./"
     },
     "devDependencies": {
         "@types/mocha": "^2.2.42",
         "@types/node": "^7.10.7",
         "eslint": "^4.11.0",
+        "ts-loader": "^6.1.0",
         "typescript": "^2.9.2",
         "vscode": "^1.1.36",
-        "webpack": "^4.39.2",
-        "webpack-cli": "^3.3.7"
+        "webpack": "^4.40.2",
+        "webpack-cli": "^3.3.8"
     },
     "dependencies": {
         "ascii-table": "0.0.9",

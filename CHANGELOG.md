@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.3.0] - 2019-09-14
+- igrated to webpack bundling
+
+## [0.2.9] - 2019-09-14
+- fixed possible login problem
+
 ## [0.2.6] - 2019-03-15
 - dependency updates (mostly security fixes)
 

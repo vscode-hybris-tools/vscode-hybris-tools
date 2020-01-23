@@ -1,4 +1,4 @@
-const HacUtil = require('./src/hac-util');
+const HacUtil = require('./hac-util');
 
 const vscode = require('vscode');
 

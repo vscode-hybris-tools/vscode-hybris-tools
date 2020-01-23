@@ -94,14 +94,18 @@ module.exports = class HacUtil {
         };
 
         let headers = {
-            Cookie: sessionId
+            Cookie: sessionId,
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRF-TOKEN": csrfToken
         };
 
         let self = this;
 
         // login
         request.post({ url: hacLoginUrl, timeout: self.getTimeout(), strictSSL: false, headers: headers, form: credentials }, function (error, response, body) {
-            if (response.statusCode == 302) {
+            let redirectLocation = response.headers.location;
+
+            if (redirectLocation && (!redirectLocation.includes('/login') || !redirectLocation.includes('/init'))) {
                 //  successfully logged in
 
                 let sessionId = self.extractSessionId(response);
@@ -254,8 +258,8 @@ module.exports = class HacUtil {
             }, function (statusCode) {
                 errorFunc('Could not login with stored credentials (http status=' + statusCode + ').');
             });
-        }, function (statusCode) {
-            errorFunc('Could not retrieve CSFR token (http status=' + statusCode + ').');
+        }, function (error) {
+            errorFunc('Could not retrieve CSFR token (' + error.error + ').');
         });
     }
 
