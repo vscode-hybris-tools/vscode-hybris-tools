@@ -127,6 +127,10 @@
                 "title": "Hybris: run flexible search query"
             },
             {
+                "command": "extension.formatFlexibleSearchQuery",
+                "title": "Hybris: Format flexible search query"
+            },
+            {
                 "command": "extension.runRawSqlQuery",
                 "title": "Hybris: run raw SQL query"
             },
@@ -164,6 +168,10 @@
                 {
                     "when": "resourceExtname == .fsql",
                     "command": "extension.runFlexibleSearchQuery"
+                },
+                {
+                    "when": "resourceExtname == .fsql",
+                    "command": "extension.formatFlexibleSearchQuery"
                 },
                 {
                     "when": "resourceExtname == .sql",
@@ -220,6 +228,7 @@
         "webpack-cli": "^3.3.7"
     },
     "dependencies": {
+        "@leoiii12/sql-formatter": "^2.4.0",
         "ascii-table": "0.0.9",
         "cheerio": "^1.0.0-rc.3",
         "console-stamp": "^0.2.9",

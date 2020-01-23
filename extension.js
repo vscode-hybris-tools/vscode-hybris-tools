@@ -1,6 +1,7 @@
 const HacUtil = require('./src/hac-util');
 
 const vscode = require('vscode');
+const sqlFormatter = require('@leoiii12/sql-formatter');
 
 
 function activate(context) {
@@ -171,6 +172,30 @@ function activate(context) {
         })
     });
     context.subscriptions.push(clearCache);
+
+    // Format fsql
+    let formatFlexibleSearchQuery = vscode.commands.registerCommand('extension.formatFlexibleSearchQuery', function () {
+        let editor = vscode.window.activeTextEditor;
+
+        if (!editor) {
+            vscode.window.showInformationMessage('Found no Groovy script to run');
+            return; // No open text editor
+        }
+
+        var editorContent = getEditorContent(editor);
+
+
+        editor.edit((builder) => {
+            const document = editor.document;
+            const lastLine = document.lineAt(document.lineCount - 2);
+
+            const start = new vscode.Position(0, 0);
+            const end = new vscode.Position(document.lineCount - 1, lastLine.text.length);
+
+            builder.replace(new vscode.Range(start, end), sqlFormatter.format(editorContent, { language: "flex" }));
+        })
+    });
+    context.subscriptions.push(formatFlexibleSearchQuery);
 
 }
 exports.activate = activate;
