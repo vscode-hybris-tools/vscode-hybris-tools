@@ -259,7 +259,7 @@ module.exports = class HacUtil {
         });
     }
 
-    executeGroovyScript(script, scriptType, successFunc, errorFunc) {
+    executeGroovyScript(script, scriptType, successFunc, errorFunc, isCommit) {
         let self = this;
 
         self.fetchCsrfTokenSessionId(function (csrfToken, sessionId) {
@@ -273,7 +273,7 @@ module.exports = class HacUtil {
 
                 let formContent = {
                     _csrf: csrfToken,
-                    commit: false,
+                    commit: isCommit === true ? true : false,
                     scriptType: scriptType,
                     script: script
                 };
@@ -341,6 +341,41 @@ module.exports = class HacUtil {
                         successFunc("Composed Type: " + result.pkComposedTypeCode);
                     } else {
                         errorFunc("Could not analyze PK: " + pk);
+                    }
+                });
+            }, function (statusCode) {
+                errorFunc('Could not login with stored credentials (http status=' + statusCode + ').');
+            });
+        }, function (statusCode) {
+            errorFunc('Could not retrieve CSFR token (http status=' + statusCode + ').');
+        });
+    }
+
+    clearCache(successFunc, errorFunc) {
+        let self = this;
+
+        self.fetchCsrfTokenSessionId(function (csrfToken, sessionId) {
+            self.login(csrfToken, sessionId, function (csrfToken, sessionId) {
+                let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url")
+                var hacClearCacheUrl;
+
+                if (hacUrl) {
+                    hacClearCacheUrl = hacUrl + "/monitoring/cache/regionCache/clear";
+                }
+
+                let formContent = {
+                    _csrf: csrfToken,
+                };
+
+                let headers = {
+                    Cookie: sessionId
+                };
+
+                request.post({ url: hacClearCacheUrl, timeout: self.getTimeout(), strictSSL: false, headers: headers, form: formContent }, function (error, response, body) {
+                    if (response.statusCode == 200) {
+                        successFunc("Cleared. " + body);
+                    } else {
+                        errorFunc("Could not clear.");
                     }
                 });
             }, function (statusCode) {
