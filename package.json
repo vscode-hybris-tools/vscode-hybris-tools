@@ -137,6 +137,10 @@
             {
                 "command": "extension.executeGroovyScript",
                 "title": "Hybris: execute Groovy script"
+            },
+            {
+                "command": "extension.executeGroovyScriptWithCommit",
+                "title": "Hybris: execute Groovy script (Commit)"
             }
         ],
         "menus": {
@@ -164,9 +168,39 @@
                 {
                     "when": "resourceExtname == .groovy",
                     "command": "extension.executeGroovyScript"
+                },
+                {
+                    "when": "resourceExtname == .groovy",
+                    "command": "extension.executeGroovyScriptWithCommit"
                 }
             ]
-        }
+        },
+        "keybindings": [
+            {
+                "command": "extension.runFlexibleSearchQuery",
+                "key": "f5",
+                "mac": "f5",
+                "when": "editorTextFocus && resourceExtname == .fsql"
+            },
+            {
+                "command": "extension.runRawSqlQuery",
+                "key": "f5",
+                "mac": "f5",
+                "when": "editorTextFocus && resourceExtname == .sql"
+            },
+            {
+                "command": "extension.executeGroovyScript",
+                "key": "f5",
+                "mac": "f5",
+                "when": "editorTextFocus && resourceExtname == .groovy"
+            },
+            {
+                "command": "extension.importImpex",
+                "key": "f5",
+                "mac": "f5",
+                "when": "editorTextFocus && resourceExtname == .impex"
+            }
+        ]
     },
     "scripts": {
         "postinstall": "node ./node_modules/vscode/bin/install",

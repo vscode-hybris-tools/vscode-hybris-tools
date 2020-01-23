@@ -109,8 +109,8 @@ function activate(context) {
     });
     context.subscriptions.push(runRawSqlQuery);
 
-     // EXECUTE GROOVY SCRIPT
-     let executeGroovyScript = vscode.commands.registerCommand('extension.executeGroovyScript', function () {
+    // EXECUTE GROOVY SCRIPT
+    let executeGroovyScript = vscode.commands.registerCommand('extension.executeGroovyScript', function () {
         let editor = vscode.window.activeTextEditor;
 
         if (!editor) {
@@ -127,6 +127,25 @@ function activate(context) {
         });
     });
     context.subscriptions.push(executeGroovyScript);
+
+    // EXECUTE GROOVY SCRIPT
+    let executeGroovyScriptWithCommit = vscode.commands.registerCommand('extension.executeGroovyScriptWithCommit', function () {
+        let editor = vscode.window.activeTextEditor;
+
+        if (!editor) {
+            vscode.window.showInformationMessage('Found no Groovy script to run');
+            return; // No open text editor
+        }
+
+        var editorContent = getEditorContent(editor);
+
+        hacUtil.executeGroovyScript(editorContent, "groovy", function (result, outputText) {
+            logOutput("Groovy script (" + editor.document.fileName + ") returned: " + result + "\nOutput:\n" + outputText);
+        }, function (message) {
+            logErrorOutput('Groovy script failed (' + editor.document.fileName + '): ' + message);
+        }, true);
+    });
+    context.subscriptions.push(executeGroovyScriptWithCommit);
 
     // ANALYZE PK
     let analyzePK = vscode.commands.registerCommand('extension.analyzePK', function () {

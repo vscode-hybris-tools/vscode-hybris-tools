@@ -259,7 +259,7 @@ module.exports = class HacUtil {
         });
     }
 
-    executeGroovyScript(script, scriptType, successFunc, errorFunc) {
+    executeGroovyScript(script, scriptType, successFunc, errorFunc, isCommit) {
         let self = this;
 
         self.fetchCsrfTokenSessionId(function (csrfToken, sessionId) {
@@ -273,7 +273,7 @@ module.exports = class HacUtil {
 
                 let formContent = {
                     _csrf: csrfToken,
-                    commit: false,
+                    commit: isCommit === true ? true : false,
                     scriptType: scriptType,
                     script: script
                 };
