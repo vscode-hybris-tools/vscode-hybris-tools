@@ -224,13 +224,13 @@
     },
     "devDependencies": {
         "@types/mocha": "^2.2.42",
-        "@types/node": "^7.10.7",
+        "@types/node": "^7.10.9",
         "eslint": "^4.11.0",
-        "ts-loader": "^6.1.0",
+        "ts-loader": "^6.2.1",
         "typescript": "^2.9.2",
         "vscode": "^1.1.36",
-        "webpack": "^4.40.2",
-        "webpack-cli": "^3.3.8"
+        "webpack": "^4.41.5",
+        "webpack-cli": "^3.3.10"
     },
     "dependencies": {
         "@leoiii12/sql-formatter": "^2.4.0",

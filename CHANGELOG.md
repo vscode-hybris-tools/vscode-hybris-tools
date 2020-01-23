@@ -1,7 +1,10 @@
 # Change Log
 
+## [0.3.1] - 2020-01-23
+- groovy execution support, sql format (thx @leoiii12)
+
 ## [0.3.0] - 2019-09-14
-- igrated to webpack bundling
+- migrated to webpack bundling
 
 ## [0.2.9] - 2019-09-14
 - fixed possible login problem
