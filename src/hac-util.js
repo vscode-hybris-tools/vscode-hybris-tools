@@ -350,4 +350,39 @@ module.exports = class HacUtil {
             errorFunc('Could not retrieve CSFR token (http status=' + statusCode + ').');
         });
     }
+
+    clearCache(successFunc, errorFunc) {
+        let self = this;
+
+        self.fetchCsrfTokenSessionId(function (csrfToken, sessionId) {
+            self.login(csrfToken, sessionId, function (csrfToken, sessionId) {
+                let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url")
+                var hacClearCacheUrl;
+
+                if (hacUrl) {
+                    hacClearCacheUrl = hacUrl + "/monitoring/cache/regionCache/clear";
+                }
+
+                let formContent = {
+                    _csrf: csrfToken,
+                };
+
+                let headers = {
+                    Cookie: sessionId
+                };
+
+                request.post({ url: hacClearCacheUrl, timeout: self.getTimeout(), strictSSL: false, headers: headers, form: formContent }, function (error, response, body) {
+                    if (response.statusCode == 200) {
+                        successFunc("Cleared. " + body);
+                    } else {
+                        errorFunc("Could not clear.");
+                    }
+                });
+            }, function (statusCode) {
+                errorFunc('Could not login with stored credentials (http status=' + statusCode + ').');
+            });
+        }, function (statusCode) {
+            errorFunc('Could not retrieve CSFR token (http status=' + statusCode + ').');
+        });
+    }
 }

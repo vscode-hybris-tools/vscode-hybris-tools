@@ -162,6 +162,16 @@ function activate(context) {
     });
     context.subscriptions.push(analyzePK);
 
+    // Clear Cache
+    let clearCache = vscode.commands.registerCommand('extension.clearCache', function () {
+        hacUtil.clearCache(function (body) {
+            logOutput(body);
+        }, function (message) {
+            logErrorOutput(message);
+        })
+    });
+    context.subscriptions.push(clearCache);
+
 }
 exports.activate = activate;
 

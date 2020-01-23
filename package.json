@@ -141,6 +141,10 @@
             {
                 "command": "extension.executeGroovyScriptWithCommit",
                 "title": "Hybris: execute Groovy script (Commit)"
+            },
+            {
+                "command": "extension.clearCache",
+                "title": "Hybris: clear Cache"
             }
         ],
         "menus": {
