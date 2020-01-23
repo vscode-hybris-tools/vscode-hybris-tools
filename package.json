@@ -68,6 +68,11 @@
                         "type": "integer",
                         "default": 10000,
                         "description": "The HTTP sockettimeout."
+                    },
+                    "hybris.hac.http.strictSSL": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "Use strict SSL."
                     }
                 }
             }
