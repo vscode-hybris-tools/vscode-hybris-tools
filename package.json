@@ -127,6 +127,10 @@
                 "title": "Hybris: run flexible search query"
             },
             {
+                "command": "extension.formatFlexibleSearchQuery",
+                "title": "Hybris: Format flexible search query"
+            },
+            {
                 "command": "extension.runRawSqlQuery",
                 "title": "Hybris: run raw SQL query"
             },
@@ -137,6 +141,14 @@
             {
                 "command": "extension.executeGroovyScript",
                 "title": "Hybris: execute Groovy script"
+            },
+            {
+                "command": "extension.executeGroovyScriptWithCommit",
+                "title": "Hybris: execute Groovy script (Commit)"
+            },
+            {
+                "command": "extension.clearCache",
+                "title": "Hybris: clear Cache"
             }
         ],
         "menus": {
@@ -158,15 +170,49 @@
                     "command": "extension.runFlexibleSearchQuery"
                 },
                 {
+                    "when": "resourceExtname == .fsql",
+                    "command": "extension.formatFlexibleSearchQuery"
+                },
+                {
                     "when": "resourceExtname == .sql",
                     "command": "extension.runRawSqlQuery"
                 },
                 {
                     "when": "resourceExtname == .groovy",
                     "command": "extension.executeGroovyScript"
+                },
+                {
+                    "when": "resourceExtname == .groovy",
+                    "command": "extension.executeGroovyScriptWithCommit"
                 }
             ]
-        }
+        },
+        "keybindings": [
+            {
+                "command": "extension.runFlexibleSearchQuery",
+                "key": "f5",
+                "mac": "f5",
+                "when": "editorTextFocus && resourceExtname == .fsql"
+            },
+            {
+                "command": "extension.runRawSqlQuery",
+                "key": "f5",
+                "mac": "f5",
+                "when": "editorTextFocus && resourceExtname == .sql"
+            },
+            {
+                "command": "extension.executeGroovyScript",
+                "key": "f5",
+                "mac": "f5",
+                "when": "editorTextFocus && resourceExtname == .groovy"
+            },
+            {
+                "command": "extension.importImpex",
+                "key": "f5",
+                "mac": "f5",
+                "when": "editorTextFocus && resourceExtname == .impex"
+            }
+        ]
     },
     "scripts": {
         "vscode:prepublish": "webpack --mode production",
@@ -187,6 +233,7 @@
         "webpack-cli": "^3.3.8"
     },
     "dependencies": {
+        "@leoiii12/sql-formatter": "^2.4.0",
         "ascii-table": "0.0.9",
         "cheerio": "^1.0.0-rc.3",
         "console-stamp": "^0.2.9",
