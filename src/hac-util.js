@@ -37,7 +37,7 @@ module.exports = class HacUtil {
 
     fetchCsrfTokenSessionId(successFunc, errorFunc) {
         let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url");
-        let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.http.strictSSL");
+        let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.hac.http.strictSSL");
         // let hacUrl = "http://httpstat.us/404";
 
         let self = this;
@@ -58,7 +58,7 @@ module.exports = class HacUtil {
 
     getCsrfTokenFromImpexPage(sessionId, successFunc, errorFunc) {
         let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url");
-        let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.http.strictSSL");
+        let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.hac.http.strictSSL");
         let hacImpexUrl = hacUrl + "/console/impex/import";
 
         let headers = {
@@ -81,7 +81,7 @@ module.exports = class HacUtil {
     login(csrfToken, sessionId, successFunc, errorFunc) {
         let username = vscode.workspace.getConfiguration().get("hybris.hac.username");
         let password = vscode.workspace.getConfiguration().get("hybris.hac.password");
-        let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.http.strictSSL");
+        let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.hac.http.strictSSL");
 
         let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url");
         var hacLoginUrl;
@@ -126,7 +126,7 @@ module.exports = class HacUtil {
         self.fetchCsrfTokenSessionId(function (csrfToken, sessionId) {
             self.login(csrfToken, sessionId, function (csrfToken, sessionId) {
                 let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url");
-                let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.http.strictSSL");
+                let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.hac.http.strictSSL");
                 var hacImpexActionUrl;
 
                 if (hacUrl) {
@@ -181,7 +181,7 @@ module.exports = class HacUtil {
         self.fetchCsrfTokenSessionId(function (csrfToken, sessionId) {
             self.login(csrfToken, sessionId, function (csrfToken, sessionId) {
                 let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url");
-                let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.http.strictSSL");
+                let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.hac.http.strictSSL");
                 var hacImpexActionUrl;
 
                 if (hacUrl) {
@@ -229,7 +229,7 @@ module.exports = class HacUtil {
         self.fetchCsrfTokenSessionId(function (csrfToken, sessionId) {
             self.login(csrfToken, sessionId, function (csrfToken, sessionId) {
                 let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url");
-                let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.http.strictSSL");
+                let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.hac.http.strictSSL");
                 var hacImpexActionUrl;
 
                 if (hacUrl) {
@@ -261,8 +261,8 @@ module.exports = class HacUtil {
                         errorFunc("Flexible search query could not be executed: " + result.exception.message);
                     }
                 });
-            }, function (statusCode) {
-                errorFunc('Could not login with stored credentials (http status=' + statusCode + ').');
+            }, function (response) {
+                errorFunc('Could not login with stored credentials (http status=' + response.statusCode + ').');
             });
         }, function (error) {
             errorFunc('Could not retrieve CSFR token (' + error.error + ').');
@@ -275,11 +275,11 @@ module.exports = class HacUtil {
         self.fetchCsrfTokenSessionId(function (csrfToken, sessionId) {
             self.login(csrfToken, sessionId, function (csrfToken, sessionId) {
                 let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url");
-                let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.http.strictSSL");
-                var hacImpexActionUrl;
+                let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.hac.http.strictSSL");
+                let hacScriptActionUrl;
 
                 if (hacUrl) {
-                    hacImpexActionUrl = hacUrl + "/console/scripting/execute";
+                    hacScriptActionUrl = hacUrl + "/console/scripting/execute";
                 }
 
                 let formContent = {
@@ -293,7 +293,7 @@ module.exports = class HacUtil {
                     Cookie: sessionId
                 };
 
-                request.post({ url: hacImpexActionUrl, timeout: self.getTimeout(), strictSSL: useStrictSSL, headers: headers, form: formContent }, function (error, response, body) {
+                request.post({ url: hacScriptActionUrl, timeout: self.getTimeout(), strictSSL: useStrictSSL, headers: headers, form: formContent }, function (error, response, body) {
                     var result = JSON.parse(body);
 
                     if (response.statusCode == 200 && result.stacktraceText == "") {
@@ -330,7 +330,7 @@ module.exports = class HacUtil {
         self.fetchCsrfTokenSessionId(function (csrfToken, sessionId) {
             self.login(csrfToken, sessionId, function (csrfToken, sessionId) {
                 let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url");
-                let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.http.strictSSL");
+                let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.hac.http.strictSSL");
                 var hacImpexActionUrl;
 
                 if (hacUrl) {
@@ -369,7 +369,7 @@ module.exports = class HacUtil {
         self.fetchCsrfTokenSessionId(function (csrfToken, sessionId) {
             self.login(csrfToken, sessionId, function (csrfToken, sessionId) {
                 let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url");
-                let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.http.strictSSL");
+                let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.hac.http.strictSSL");
                 var hacClearCacheUrl;
 
                 if (hacUrl) {
