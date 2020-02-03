@@ -1,7 +1,8 @@
 # Change Log
 
-## [0.3.1] - 2020-01-23
+## [0.3.1] - 2020-03-02
 - groovy execution support, sql format (thx @leoiii12)
+- setting to enable/disable `strictSSL`
 
 ## [0.3.0] - 2019-09-14
 - migrated to webpack bundling
