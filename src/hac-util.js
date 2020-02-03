@@ -37,12 +37,13 @@ module.exports = class HacUtil {
 
     fetchCsrfTokenSessionId(successFunc, errorFunc) {
         let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url");
+        let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.http.strictSSL");
         // let hacUrl = "http://httpstat.us/404";
 
         let self = this;
 
         // get the login form and extract the CSRF token
-        request(hacUrl, { timeout: self.getTimeout(), strictSSL: false }, function (error, response, body) {
+        request(hacUrl, { timeout: self.getTimeout(), strictSSL: useStrictSSL }, function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 let csfr = self.extractCsrfToken(body);
                 let sessionId = self.extractSessionId(response);
@@ -56,7 +57,8 @@ module.exports = class HacUtil {
 
 
     getCsrfTokenFromImpexPage(sessionId, successFunc, errorFunc) {
-        let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url")
+        let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url");
+        let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.http.strictSSL");
         let hacImpexUrl = hacUrl + "/console/impex/import";
 
         let headers = {
@@ -66,7 +68,7 @@ module.exports = class HacUtil {
         let self = this;
 
         // get the login form and extract the CSRF token
-        request({ url: hacImpexUrl, headers: headers, timeout: self.getTimeout(), strictSSL: false }, function (error, response, body) {
+        request({ url: hacImpexUrl, headers: headers, timeout: self.getTimeout(), strictSSL: useStrictSSL }, function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 let csfr = self.extractCsrfToken(body);
                 successFunc(csfr, sessionId);
@@ -79,6 +81,7 @@ module.exports = class HacUtil {
     login(csrfToken, sessionId, successFunc, errorFunc) {
         let username = vscode.workspace.getConfiguration().get("hybris.hac.username");
         let password = vscode.workspace.getConfiguration().get("hybris.hac.password");
+        let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.http.strictSSL");
 
         let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url");
         var hacLoginUrl;
@@ -102,7 +105,7 @@ module.exports = class HacUtil {
         let self = this;
 
         // login
-        request.post({ url: hacLoginUrl, timeout: self.getTimeout(), strictSSL: false, headers: headers, form: credentials }, function (error, response, body) {
+        request.post({ url: hacLoginUrl, timeout: self.getTimeout(), strictSSL: useStrictSSL, headers: headers, form: credentials }, function (error, response, body) {
             let redirectLocation = response.headers.location;
 
             if (redirectLocation && (!redirectLocation.includes('/login') || !redirectLocation.includes('/init'))) {
@@ -122,7 +125,8 @@ module.exports = class HacUtil {
 
         self.fetchCsrfTokenSessionId(function (csrfToken, sessionId) {
             self.login(csrfToken, sessionId, function (csrfToken, sessionId) {
-                let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url")
+                let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url");
+                let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.http.strictSSL");
                 var hacImpexActionUrl;
 
                 if (hacUrl) {
@@ -153,7 +157,7 @@ module.exports = class HacUtil {
                 };
 
                 // import impex
-                request.post({ url: hacImpexActionUrl, timeout: self.getTimeout(), strictSSL: false, headers: headers, formData: formContent }, function (error, response, body) {
+                request.post({ url: hacImpexActionUrl, timeout: self.getTimeout(), strictSSL: useStrictSSL, headers: headers, formData: formContent }, function (error, response, body) {
                     var html = cheerio.load(body);
                     var impexResult = html(".impexResult > pre").text();
 
@@ -176,7 +180,8 @@ module.exports = class HacUtil {
 
         self.fetchCsrfTokenSessionId(function (csrfToken, sessionId) {
             self.login(csrfToken, sessionId, function (csrfToken, sessionId) {
-                let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url")
+                let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url");
+                let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.http.strictSSL");
                 var hacImpexActionUrl;
 
                 if (hacUrl) {
@@ -200,7 +205,7 @@ module.exports = class HacUtil {
                 };
 
                 // validate impex
-                request.post({ url: hacImpexActionUrl, timeout: self.getTimeout(), strictSSL: false, headers: headers, form: formContent }, function (error, response, body) {
+                request.post({ url: hacImpexActionUrl, timeout: self.getTimeout(), strictSSL: useStrictSSL, headers: headers, form: formContent }, function (error, response, body) {
                     var html = cheerio.load(body);
                     var impexResult = html("span#validationResultMsg[data-level='error']").attr("data-result");
 
@@ -223,7 +228,8 @@ module.exports = class HacUtil {
 
         self.fetchCsrfTokenSessionId(function (csrfToken, sessionId) {
             self.login(csrfToken, sessionId, function (csrfToken, sessionId) {
-                let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url")
+                let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url");
+                let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.http.strictSSL");
                 var hacImpexActionUrl;
 
                 if (hacUrl) {
@@ -244,7 +250,7 @@ module.exports = class HacUtil {
                     Cookie: sessionId
                 };
 
-                request.post({ url: hacImpexActionUrl, timeout: self.getTimeout(), strictSSL: false, headers: headers, form: formContent }, function (error, response, body) {
+                request.post({ url: hacImpexActionUrl, timeout: self.getTimeout(), strictSSL: useStrictSSL, headers: headers, form: formContent }, function (error, response, body) {
                     var result = JSON.parse(body);
 
                     if (response.statusCode == 200 && result.exception == null) {
@@ -268,7 +274,8 @@ module.exports = class HacUtil {
 
         self.fetchCsrfTokenSessionId(function (csrfToken, sessionId) {
             self.login(csrfToken, sessionId, function (csrfToken, sessionId) {
-                let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url")
+                let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url");
+                let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.http.strictSSL");
                 var hacImpexActionUrl;
 
                 if (hacUrl) {
@@ -286,7 +293,7 @@ module.exports = class HacUtil {
                     Cookie: sessionId
                 };
 
-                request.post({ url: hacImpexActionUrl, timeout: self.getTimeout(), strictSSL: false, headers: headers, form: formContent }, function (error, response, body) {
+                request.post({ url: hacImpexActionUrl, timeout: self.getTimeout(), strictSSL: useStrictSSL, headers: headers, form: formContent }, function (error, response, body) {
                     var result = JSON.parse(body);
 
                     if (response.statusCode == 200 && result.stacktraceText == "") {
@@ -322,7 +329,8 @@ module.exports = class HacUtil {
 
         self.fetchCsrfTokenSessionId(function (csrfToken, sessionId) {
             self.login(csrfToken, sessionId, function (csrfToken, sessionId) {
-                let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url")
+                let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url");
+                let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.http.strictSSL");
                 var hacImpexActionUrl;
 
                 if (hacUrl) {
@@ -338,7 +346,7 @@ module.exports = class HacUtil {
                     Cookie: sessionId
                 };
 
-                request.post({ url: hacImpexActionUrl, timeout: self.getTimeout(), strictSSL: false, headers: headers, form: formContent }, function (error, response, body) {
+                request.post({ url: hacImpexActionUrl, timeout: self.getTimeout(), strictSSL: useStrictSSL, headers: headers, form: formContent }, function (error, response, body) {
                     if (response.statusCode == 200) {
                         var result = JSON.parse(body);
 
@@ -360,7 +368,8 @@ module.exports = class HacUtil {
 
         self.fetchCsrfTokenSessionId(function (csrfToken, sessionId) {
             self.login(csrfToken, sessionId, function (csrfToken, sessionId) {
-                let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url")
+                let hacUrl = vscode.workspace.getConfiguration().get("hybris.hac.url");
+                let useStrictSSL = vscode.workspace.getConfiguration().get("hybris.http.strictSSL");
                 var hacClearCacheUrl;
 
                 if (hacUrl) {
@@ -375,7 +384,7 @@ module.exports = class HacUtil {
                     Cookie: sessionId
                 };
 
-                request.post({ url: hacClearCacheUrl, timeout: self.getTimeout(), strictSSL: false, headers: headers, form: formContent }, function (error, response, body) {
+                request.post({ url: hacClearCacheUrl, timeout: self.getTimeout(), strictSSL: useStrictSSL, headers: headers, form: formContent }, function (error, response, body) {
                     if (response.statusCode == 200) {
                         successFunc("Cleared. " + body);
                     } else {
