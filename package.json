@@ -118,6 +118,13 @@
                 ]
             }
         ],
+        "grammars": [
+            {
+                "language": "flexibleSearchQuery",
+                "scopeName": "source.sql",
+                "path": "./syntaxes/flexQuery.tmLanguage.json"
+            }
+        ],
         "commands": [
             {
                 "command": "extension.importImpex",
@@ -169,6 +176,10 @@
                 {
                     "when": "resourceExtname == .sql",
                     "command": "extension.runFlexibleSearchQuery"
+                },
+                {
+                    "when": "resourceExtname == .sql",
+                    "command": "extension.formatFlexibleSearchQuery"
                 },
                 {
                     "when": "resourceExtname == .fsql",
