@@ -34,6 +34,58 @@ function activate(context) {
         return editorContent;
     }
 
+    let isCommit = true;
+
+    const commandId = 'extension.toggleIsCommit';
+
+    const setCommitItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 1);
+    const setNotCommitItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 2);
+    setCommitItem.command = commandId;
+    setCommitItem.text = "(Commit)"
+    setCommitItem.color = "#00FF00"
+    setNotCommitItem.command = commandId;
+    setNotCommitItem.text = "(Rollback)"
+    setNotCommitItem.color = "#FF0000"
+    context.subscriptions.push(setCommitItem);
+    context.subscriptions.push(setNotCommitItem);
+
+    const executeGroovyScriptItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 3);
+    executeGroovyScriptItem.command = 'extension.executeGroovyScript';
+    executeGroovyScriptItem.text = "Execute"
+    context.subscriptions.push(executeGroovyScriptItem);
+
+    let updateStatusBarItems = () => {
+        let editor = vscode.window.activeTextEditor
+        if (editor.document.languageId == 'groovy') {
+            executeGroovyScriptItem.show()
+
+            if (isCommit === true) {
+                setCommitItem.show()
+                setNotCommitItem.hide()
+
+                executeGroovyScriptItem.command = 'extension.executeGroovyScriptWithCommit'
+            } else {
+                setCommitItem.hide()
+                setNotCommitItem.show()
+
+                executeGroovyScriptItem.command = 'extension.executeGroovyScript'
+            }
+        } else {
+            setCommitItem.hide()
+            setNotCommitItem.hide()
+            executeGroovyScriptItem.hide()
+        }
+    };
+    context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(updateStatusBarItems));
+    updateStatusBarItems();
+
+    // TOGGLE GROOVY IS COMMIT
+    const toggleIsCommit = vscode.commands.registerCommand(commandId, function () {
+        isCommit = !isCommit;
+        updateStatusBarItems();
+    });
+    context.subscriptions.push(toggleIsCommit);
+
     // IMPEX EXECUTION
     let importImpex = vscode.commands.registerCommand('extension.importImpex', function () {
         let editor = vscode.window.activeTextEditor;
