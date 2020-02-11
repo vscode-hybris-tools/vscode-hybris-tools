@@ -236,7 +236,8 @@
         "webpack-dev": "webpack --mode development --watch",
         "postinstall": "node ./node_modules/vscode/bin/install",
         "test": "node ./node_modules/vscode/bin/test",
-        "test-compile": "tsc -p ./"
+        "test-compile": "tsc -p ./",
+        "test-package": "webpack --mode development && vsce package && code --install-extension vscode-hybris-tools-0.3.2.vsix --force"
     },
     "devDependencies": {
         "@types/mocha": "^2.2.42",
